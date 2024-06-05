@@ -21,19 +21,31 @@ class ThoughtSelector(object):
         # infrastructure to keep track of selections
         self._last_thought = None
 
+    @property
+    def last_thought(self):
+        return self._last_thought
+
     def _preprocess(self, brain_response, thought_options=None):
+        # Manage types of capsules
+        capsule_type = 'statement' if 'statement' in brain_response.keys() else 'mention'
+        capsule_focus = 'triple' if 'statement' in brain_response.keys() else 'entity'
+
         # Quick check if there is anything to do here
-        if not brain_response['statement']['triple']:
+        if not brain_response[capsule_type][capsule_focus]:
             return None
 
         # What types of thoughts will we phrase?
         if not thought_options:
-            thought_options = ['_entity_novelty', '_complement_gaps']  # These are available for entities
+            thought_options = ['_complement_conflict', '_negation_conflicts',
+                               '_statement_novelty', '_entity_novelty',
+                               '_subject_gaps', '_complement_gaps',
+                               '_overlaps', '_trust'] if 'statement' in brain_response.keys() \
+                else ['_entity_novelty', '_complement_gaps']
         self._log.debug(f'Thoughts options: {thought_options}')
 
         # Casefold
-        utterance = casefold_capsule(brain_response['statement'], format='natural')
         thoughts = casefold_capsule(brain_response['thoughts'], format='natural')
+        utterance = casefold_capsule(brain_response[capsule_type], format='natural')
 
         # Extract thoughts from brain response
         thoughts = thoughts_from_brain(utterance, thoughts, filter=thought_options)

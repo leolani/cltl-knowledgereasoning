@@ -7,8 +7,8 @@
 
 import numpy as np
 import torch
-from transformers import (BertForNextSentencePrediction,
-                          BertTokenizer)
+from cltl.commons.casefolding import (casefold_capsule)
+from transformers import (BertForNextSentencePrediction, BertTokenizer)
 
 from cltl.thoughts.api import ThoughtSelector
 
@@ -53,7 +53,21 @@ class NSP(ThoughtSelector):
         # Prob(is_next) using softmax
         return np.exp(logits[0]) / np.sum(np.exp(logits))
 
-    def select(self, scores):
+    def select(self, thoughts):
+        thoughts = self._preprocess(thoughts)
+
+        # Score phrasings of thoughts
+        scores = []
+        for thought_type, thought_info in thoughts.items():
+            # preprocess
+            thought_info = casefold_capsule(thought_info, format="natural")
+
+            # Score response (context is thought type and sentence to score is combined thought info)
+            score = self.score_response(thought_info[0], thought_type)
+            scores.append((thought_type, thought_info[0], score))
+
         scores.sort(key=lambda x: x[2], reverse=True)
 
-        return scores[0]
+        # Safe processing
+        thought_type, thought_info = self._postprocess(thoughts, scores[0][0])
+        return {thought_type: thought_info}

@@ -25,6 +25,7 @@ setup(
     install_requires=[
         "cltl.brain",
         "cltl.combot~=1.0.dev0",
+        "cltl.dialogue_evaluation",
         "matplotlib",
         "tqdm"
     ],

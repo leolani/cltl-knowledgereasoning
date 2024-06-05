@@ -6,16 +6,14 @@
 """
 
 import json
-import os
-import random
-
 import matplotlib.pyplot as plt
 import numpy as np
+import os
+import random
 from rdflib import ConjunctiveGraph
 from rdflib.extras.external_graph_libs import rdflib_to_networkx_multidigraph
 
 from cltl.thoughts.api import ThoughtSelector
-
 
 # from cltl.dialogue_evaluation.metrics.ontology_measures import get_avg_population
 # from cltl.dialogue_evaluation.metrics.graph_measures import get_avg_degree, get_sparseness, get_shortest_path
@@ -48,13 +46,13 @@ class UCB(ThoughtSelector):
         self._decay = c / tmax
 
         # Include rewards according to the state of the brain
-        self._state_evaluator = BrainEvaluator(brain)
+        self._state_evaluator = BrainEvaluator(brain, reward)
         self._log.debug(f"Brain state evaluator ready")
         self._reward = reward
         self._log.info(f"Reward: {self._reward}")
 
         # infrastructure to keep track of selections
-        self._state_history = [self._state_evaluator.evaluate_brain_state(self._reward)]
+        self._state_history = [self._state_evaluator.evaluate_brain_state()]
         self._reward_history = [0]
 
         # Load learned policy
@@ -68,6 +66,10 @@ class UCB(ThoughtSelector):
     @property
     def reward_history(self):
         return self._reward_history
+
+    @property
+    def state_evaluator(self):
+        return self._state_evaluator
 
     # Utils
 
@@ -83,7 +85,7 @@ class UCB(ThoughtSelector):
             return
 
         if not os.path.isfile(filename):  # File exists?
-            print("WARNING %s does not yet exist" % filename)
+            self._log.warning(f"WARNING {filename.resolve()} does not yet exist")
             return
 
         with open(filename, "r") as file:
@@ -201,20 +203,21 @@ class UCB(ThoughtSelector):
 
         returns: None
         """
-        brain_state = self._state_evaluator.evaluate_brain_state(self._reward)
-        self._state_history.append(brain_state)
+        brain_state = self._state_evaluator.evaluate_brain_state()
         self._log.info(f"Brain state: {brain_state}")
+        self._state_history.append(brain_state)
 
         # Reward last thought with R = S_brain(t) - S_brain(t-1)
+        reward = 0
         if self._last_thought and len(self._state_history) > 1:
             self._log.info(f"Calculate reward")
-            new_state = self._state_history[-1]
-            old_state = self._state_history[-2]
-            reward = new_state / old_state
+            reward = self.state_evaluator.compare_brain_states(brain_state, self._state_history[-2])
 
             self.update_utility(self._last_thought, reward)
             self.reward_history.append(reward)
             self._log.info(f"{reward} reward due to {self._last_thought}")
+
+        return reward
 
     # Plotting
 
@@ -264,17 +267,18 @@ class UCB(ThoughtSelector):
         plt.bar(range(len(a)), q)
 
         if filename:
-            plt.savefig(filename / f"results.png", dpi=300)
+            plt.savefig(filename, dpi=300)
 
         plt.show()
 
 
 class BrainEvaluator(object):
-    def __init__(self, brain):
+    def __init__(self, brain, main_graph_metric):
         """ Create an object to evaluate the state of the brain according to different graph metrics.
         The graph can be evaluated by a single given metric, or a full set of pre established metrics
         """
         self._brain = brain
+        self.metric = main_graph_metric
 
     def brain_as_graph(self):
         # Take brain from previous episodes
@@ -289,9 +293,10 @@ class BrainEvaluator(object):
 
         return netx
 
-    def evaluate_brain_state(self, metric):
+    def evaluate_brain_state(self):
         brain_state = None
 
+        ##### Group A #####
         # if metric == 'Average degree':
         #     brain_state = get_avg_degree(self.brain_as_netx())
         # elif metric == 'Sparseness':
@@ -299,19 +304,37 @@ class BrainEvaluator(object):
         # elif metric == 'Shortest path':
         #     brain_state = get_shortest_path(self.brain_as_netx())
 
-        if metric == 'Total triples':
+        ##### Group B #####
+        if self.metric == 'Total triples':
             brain_state = self._brain.count_triples()
-        # elif metric == 'Average population':
-        #     brain_state = get_avg_population(self.brain_as_graph())
+        elif self.metric == 'Average population':
+            brain_state = get_avg_population(self.brain_as_graph())
 
-        elif metric == 'Ratio claims to triples':
+        ##### Group C #####
+        elif self.metric == 'Ratio claims to triples':
             brain_state = self._brain.count_statements() / self._brain.count_triples()
-        elif metric == 'Ratio perspectives to claims':
-            brain_state = self._brain.count_perspectives() / self._brain.count_statements()
-        elif metric == 'Ratio conflicts to claims':
-            brain_state = len(self._brain.get_all_negation_conflicts()) / self._brain.count_statements()
+        elif self.metric == 'Ratio perspectives to claims':
+            if self._brain.count_statements() != 0:
+                brain_state = self._brain.count_perspectives() / self._brain.count_statements()
+            else:
+                brain_state = self._brain.count_perspectives() / 0.0000001
+        elif self.metric == 'Ratio conflicts to claims':
+            if self._brain.count_statements() != 0:
+                brain_state = len(self._brain.get_all_negation_conflicts()) / self._brain.count_statements()
+            else:
+                brain_state = len(self._brain.get_all_negation_conflicts()) / 0.0000001
 
         return brain_state
+
+    @staticmethod
+    def compare_brain_states(current_state, prev_state):
+        # TODO standardize according to metric
+        if current_state is None or prev_state is None or prev_state == 0:
+            reward = 0
+        else:
+            reward = current_state / prev_state
+
+        return reward
 
     def calculate_brain_statistics(self, brain_response):
         # Grab the thoughts
@@ -326,8 +349,8 @@ class BrainEvaluator(object):
             'subject gaps': len(thoughts['_subject_gaps']) if thoughts['_subject_gaps'] else 0,
             'object gaps': len(thoughts['_complement_gaps']) if thoughts['_complement_gaps'] else 0,
             'statement novelty': len(thoughts['_statement_novelty']) if thoughts['_statement_novelty'] else 0,
-            'subject novelty': thoughts['_entity_novelty']['_subject'],
-            'object novelty': thoughts['_entity_novelty']['_complement'],
+            'subject novelty': int(thoughts['_entity_novelty']['_subject']['value']),
+            'object novelty': int(thoughts['_entity_novelty']['_complement']['value']),
             'overlaps subject-predicate': len(thoughts['_overlaps']['_subject'])
             if thoughts['_overlaps']['_subject'] else 0,
             'overlaps predicate-object': len(thoughts['_overlaps']['_complement'])
