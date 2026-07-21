@@ -1,0 +1,289 @@
+[
+  {
+    "response": [
+      {
+        "s": {
+          "type": "uri",
+          "value": "http://cltl.nl/leolani/world/bram-1"
+        },
+        "slabel": {
+          "type": "literal",
+          "value": ""
+        },
+        "p": {
+          "type": "uri",
+          "value": "http://cltl.nl/leolani/n2mu/be-from"
+        },
+        "pOriginal": {
+          "type": "uri",
+          "value": "http://cltl.nl/leolani/n2mu/be-from"
+        },
+        "o": {
+          "type": "uri",
+          "value": "http://cltl.nl/leolani/world/netherlands"
+        },
+        "olabel": {
+          "type": "literal",
+          "value": ""
+        },
+        "authorlabel": {
+          "type": "literal",
+          "value": "piek"
+        },
+        "certaintyValue": {
+          "type": "literal",
+          "value": "CERTAIN"
+        },
+        "polarityValue": {
+          "type": "literal",
+          "value": "POSITIVE"
+        },
+        "sentimentValue": {
+          "type": "literal",
+          "value": "UNDERSPECIFIED"
+        },
+        "emotionValue": {
+          "type": "literal",
+          "value": "UNDERSPECIFIED"
+        }
+      }
+    ],
+    "question": {
+      "chat": 1,
+      "turn": 4,
+      "author": {
+        "label": "joey",
+        "type": [
+          "person"
+        ],
+        "uri": "http://cltl.nl/leolani/friends/joey-1"
+      },
+      "utterance": "Where is Bram from?",
+      "utterance_type": "QUESTION",
+      "position": "",
+      "subject": {
+        "label": "bram",
+        "type": [
+          "person"
+        ],
+        "uri": "http://cltl.nl/leolani/world/bram-1"
+      },
+      "predicate": {
+        "label": "be-from",
+        "uri": "http://cltl.nl/leolani/n2mu/be-from"
+      },
+      "object": {
+        "label": "",
+        "type": [
+          ""
+        ],
+        "uri": ""
+      },
+      "timestamp": "2026-07-21T09:06:00.447202",
+      "context_id": 243,
+      "triple": {
+        "_subject": {
+          "_id": "http://cltl.nl/leolani/world/bram-1",
+          "_label": "bram",
+          "_offset": null,
+          "_confidence": 0.0,
+          "_types": [
+            "person"
+          ]
+        },
+        "_predicate": {
+          "_id": "http://cltl.nl/leolani/n2mu/be-from",
+          "_label": "be-from",
+          "_offset": null,
+          "_confidence": 0.0,
+          "_cardinality": 1
+        },
+        "_complement": {
+          "_id": "http://cltl.nl/leolani/world/",
+          "_label": "",
+          "_offset": null,
+          "_confidence": 0.0,
+          "_types": []
+        }
+      }
+    },
+    "rdf_log_path": null
+  },
+  {
+    "response": [],
+    "question": {
+      "chat": 1,
+      "turn": 5,
+      "author": {
+        "label": "joey",
+        "type": [
+          "person"
+        ],
+        "uri": "http://cltl.nl/leolani/friends/joey-1"
+      },
+      "utterance": "Who is from Serbia?",
+      "utterance_type": "QUESTION",
+      "position": "",
+      "subject": {
+        "label": "",
+        "type": [
+          "person"
+        ],
+        "uri": ""
+      },
+      "predicate": {
+        "label": "be-from",
+        "uri": "http://cltl.nl/leolani/n2mu/be-from"
+      },
+      "object": {
+        "label": "serbia",
+        "type": [
+          "location"
+        ],
+        "uri": "http://cltl.nl/leolani/world/serbia"
+      },
+      "timestamp": "2026-07-21T09:06:00.447202",
+      "context_id": 243,
+      "triple": {
+        "_subject": {
+          "_id": "http://cltl.nl/leolani/world/",
+          "_label": "",
+          "_offset": null,
+          "_confidence": 0.0,
+          "_types": [
+            "person"
+          ]
+        },
+        "_predicate": {
+          "_id": "http://cltl.nl/leolani/n2mu/be-from",
+          "_label": "be-from",
+          "_offset": null,
+          "_confidence": 0.0,
+          "_cardinality": 1
+        },
+        "_complement": {
+          "_id": "http://cltl.nl/leolani/world/serbia",
+          "_label": "serbia",
+          "_offset": null,
+          "_confidence": 0.0,
+          "_types": [
+            "location"
+          ]
+        }
+      }
+    },
+    "rdf_log_path": null
+  },
+  {
+    "response": [
+      {
+        "s": {
+          "type": "uri",
+          "value": "http://cltl.nl/leolani/world/selene-1"
+        },
+        "slabel": {
+          "type": "literal",
+          "value": ""
+        },
+        "p": {
+          "type": "uri",
+          "value": "http://cltl.nl/leolani/n2mu/be-from"
+        },
+        "pOriginal": {
+          "type": "uri",
+          "value": "http://cltl.nl/leolani/n2mu/be-from"
+        },
+        "o": {
+          "type": "uri",
+          "value": "http://cltl.nl/leolani/world/mexico"
+        },
+        "olabel": {
+          "type": "literal",
+          "value": ""
+        },
+        "authorlabel": {
+          "type": "literal",
+          "value": "piek"
+        },
+        "certaintyValue": {
+          "type": "literal",
+          "value": "CERTAIN"
+        },
+        "polarityValue": {
+          "type": "literal",
+          "value": "POSITIVE"
+        },
+        "sentimentValue": {
+          "type": "literal",
+          "value": "UNDERSPECIFIED"
+        },
+        "emotionValue": {
+          "type": "literal",
+          "value": "UNDERSPECIFIED"
+        }
+      }
+    ],
+    "question": {
+      "chat": 1,
+      "turn": 6,
+      "author": {
+        "label": "joey",
+        "type": [
+          "person"
+        ],
+        "uri": "http://cltl.nl/leolani/friends/joey-1"
+      },
+      "utterance": "Is Selene from Mexico?",
+      "utterance_type": "QUESTION",
+      "position": "",
+      "subject": {
+        "label": "selene",
+        "type": [
+          "person"
+        ],
+        "uri": "http://cltl.nl/leolani/world/selene-1"
+      },
+      "predicate": {
+        "label": "be-from",
+        "uri": "http://cltl.nl/leolani/n2mu/be-from"
+      },
+      "object": {
+        "label": "mexico",
+        "type": [
+          "location"
+        ],
+        "uri": "http://cltl.nl/leolani/world/mexico"
+      },
+      "timestamp": "2026-07-21T09:06:00.447203",
+      "context_id": 243,
+      "triple": {
+        "_subject": {
+          "_id": "http://cltl.nl/leolani/world/selene-1",
+          "_label": "selene",
+          "_offset": null,
+          "_confidence": 0.0,
+          "_types": [
+            "person"
+          ]
+        },
+        "_predicate": {
+          "_id": "http://cltl.nl/leolani/n2mu/be-from",
+          "_label": "be-from",
+          "_offset": null,
+          "_confidence": 0.0,
+          "_cardinality": 1
+        },
+        "_complement": {
+          "_id": "http://cltl.nl/leolani/world/mexico",
+          "_label": "mexico",
+          "_offset": null,
+          "_confidence": 0.0,
+          "_types": [
+            "location"
+          ]
+        }
+      }
+    },
+    "rdf_log_path": null
+  }
+]
